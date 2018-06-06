@@ -6,14 +6,13 @@
 
 package com.teasoft.rydeon.repository;
 
-import com.teasoft.rydeon.model.Person;
+import com.teasoft.rydeon.model.OTP;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  *
  * @author Theodore Elikem Attigah
  */
-public interface PersonRepo extends CrudRepository<Person, Long> {
-    Person findByEmailOrPhone(String Email, String phone);
-    Person findByPhone(String phone);
+public interface OtpRepo extends CrudRepository<OTP, String> {
+    OTP findByPhoneAndOtp(String phone, String otp);
 }

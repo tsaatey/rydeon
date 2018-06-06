@@ -6,6 +6,7 @@
 package com.teasoft.rydeon.service;
 
 import com.teasoft.rydeon.auth.TokenUser;
+import com.teasoft.rydeon.model.Person;
 import com.teasoft.rydeon.model.UserRole;
 import com.teasoft.rydeon.model.Users;
 import com.teasoft.rydeon.repository.UserRoleRepo;
@@ -42,6 +43,10 @@ public class UsersService {
     public Users getCurrentUsers() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return ((TokenUser) authentication.getPrincipal()).getUser();
+    }
+    
+    public Users findByPerson(Person person) {
+        return usersRepo.findByPerson(person);
     }
 
     /**

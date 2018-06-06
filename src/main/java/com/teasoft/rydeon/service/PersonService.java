@@ -24,4 +24,8 @@ public class PersonService {
         return personRepo.save(person);
     }
     
+    public Person findByPhone(String phone) {
+        return personRepo.findByPhone(phone);
+    }
+    
 }

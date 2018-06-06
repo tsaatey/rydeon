@@ -40,6 +40,7 @@ public class Person implements Serializable {
     private String gender;
     private byte[] image;
     private String digitalAddress;
+    private Boolean verified;
     @ManyToOne
     private Person addedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -151,7 +152,13 @@ public class Person implements Serializable {
     public void setDateTimeUpdated(Date dateTimeUpdated) {
         this.dateTimeUpdated = dateTimeUpdated;
     }
-    
-    
 
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
+    }
+    
 }
