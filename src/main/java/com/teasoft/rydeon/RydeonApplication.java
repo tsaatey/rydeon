@@ -27,7 +27,7 @@ public class RydeonApplication {
     @Primary
     public DriverManagerDataSource getMySQLDatasource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setPassword("unityn");
+        dataSource.setPassword("");
         dataSource.setUrl("jdbc:mysql://localhost/rydeon");
         dataSource.setUsername("root");
         return dataSource;
