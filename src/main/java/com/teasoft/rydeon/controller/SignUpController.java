@@ -10,6 +10,7 @@ import com.teasoft.rydeon.model.OTP;
 import com.teasoft.rydeon.model.Person;
 import com.teasoft.rydeon.model.Users;
 import com.teasoft.rydeon.repository.PersonRepo;
+import com.teasoft.rydeon.repository.UsersRepo;
 import com.teasoft.rydeon.service.OTPService;
 import com.teasoft.rydeon.service.PersonService;
 import com.teasoft.rydeon.service.SMSService;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,6 +47,8 @@ public class SignUpController {
     OTPService otpService;
     @Autowired
     SMSService smsService;
+    @Autowired
+    UsersRepo userRepo;
     
     @RequestMapping("resources/rydeon/testotp")
     @ResponseBody
@@ -104,11 +108,12 @@ public class SignUpController {
             return new JSONResponse(false, 0, person.getPhone()+" is already registered", "Already Registered");
         }
         
-        //Persist person and use the persisted person to person user
+        //Persist person and use the persisted person to persist user
         person = personService.save(person);
         Users users = new Users();
         users.setPerson(person);
         users.setPassword(PasswordHash.createHash((String) dataHash.get("password")));
+        users.setIsActive(false);
         userService.saveUsers(users);
         
         //Send a one-time-password to verify that the user's phone is his or hers
@@ -186,14 +191,32 @@ public class SignUpController {
             return new JSONResponse(false, 0, null, "Invalid code");
         }
         
+        if(otp.getIsUsed()) {
+            return new JSONResponse(false, 0, null, "Code already used");
+        }
+        
         otp.setIsUsed(true);
         otp = otpService.save(otp);
         
         //Set user as active
         Users user = userService.findByPerson(person);
         user.setIsActive(true);
-        return new JSONResponse(true, 0, otp, "SUCCESS");
+        userService.saveUsers(user);
         
+        //Set person as verified
+        person.setVerified(Boolean.TRUE);
+        //Persist person
+        personService.save(person);
+        return new JSONResponse(true, 0, otp, "SUCCESS");
+  
+    }
+    
+    @RequestMapping("resources/rydeon/testuser")
+    @ResponseBody
+    public JSONResponse getUser(@RequestParam("username") String username) {
+        Person person = personRepo.findByEmailOrPhone(username, username);
+        final Users user = userRepo.findByPerson(person);
+        return new JSONResponse(true, 0, user, "SC");
     }
     
     @ExceptionHandler(NullPointerException.class)
