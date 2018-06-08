@@ -6,7 +6,10 @@
 package com.teasoft.rydeon.controller;
 
 import com.teasoft.rydeon.exception.MissingParameterException;
+import com.teasoft.rydeon.model.Person;
+import com.teasoft.rydeon.model.Users;
 import com.teasoft.rydeon.service.UsersService;
+import com.teasoft.rydeon.util.Enums;
 import com.teasoft.rydeon.util.JSONResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import java.security.Principal;
 
 /**
  *
@@ -27,11 +29,18 @@ public class UserController {
 
     @Autowired
     UsersService userService;
-
-    @RequestMapping("/user")
-    public Principal user(Principal user) {
-        return user;
+    
+    /**
+     * 
+     * @return 
+     */
+    @RequestMapping("/api/rydeon/userdetails")
+    @ResponseBody
+    public JSONResponse userServicegetUser() {
+        Long id = userService.getCurrentUsers().getId();
+        return new JSONResponse(true, 0, userService.findOne(id).getPerson(), Enums.JSONResponseMessage.SUCCESS.toString());
     }
+
 
     /**
      * Creates an account which can be used to user. Account types can be 1, 2

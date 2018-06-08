@@ -8,7 +8,7 @@ public class TokenUser extends org.springframework.security.core.userdetails.Use
     private Users user;
 
     public TokenUser(Users user) {
-        super(user.getId().toString(), user.getPassword(), user.getIsActive(), true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
+        super(user.getId().toString(), user.getPassword(), user.getIsActive(), true, true, true, AuthorityUtils.createAuthorityList(user.getRoles().toArray(new String[0])));
         this.user = user;
     }
 
