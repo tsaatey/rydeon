@@ -70,5 +70,11 @@ public class Role implements Serializable {
     public void setDateTimeUpdated(Date dateTimeUpdated) {
         this.dateTimeUpdated = dateTimeUpdated;
     }
+
+    @Override
+    public String toString() {
+        return "Role{" + "roleName=" + roleName + '}';
+    }
+    
     
 }

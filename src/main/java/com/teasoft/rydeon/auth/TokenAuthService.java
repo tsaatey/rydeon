@@ -1,8 +1,10 @@
 package com.teasoft.rydeon.auth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teasoft.rydeon.model.Users;
+import com.teasoft.rydeon.model.Views;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,8 +20,8 @@ import java.util.Date;
 @Service
 public class TokenAuthService {
 
-    // 1 day
-    private static final long VALIDITY_TIME_MS = 1 * 24 * 60 * 60 * 1000;
+    // 100 days
+    private static final long VALIDITY_TIME_MS = 100 * 24 * 60 * 60 * 1000;
     private static final long TEMP_VALIDITY_TIME_MS = 1000;
     private static final String AUTH_HEADER_NAME = "x-auth-token";
 
@@ -92,7 +94,9 @@ public class TokenAuthService {
 
     private String toJSON(Users user) {
         try {
-            return new ObjectMapper().writeValueAsString(user);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
+            return mapper.writerWithView(Views.TokenUser.class).writeValueAsString(user);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException(e);
         }

@@ -8,7 +8,7 @@ public class TokenUser extends org.springframework.security.core.userdetails.Use
     private Users user;
 
     public TokenUser(Users user) {
-        super(user.getPerson().getPhone(), user.getPassword(), user.getIsActive(), true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
+        super(user.getId().toString(), user.getPassword(), user.getIsActive(), true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
         this.user = user;
     }
 
@@ -17,7 +17,7 @@ public class TokenUser extends org.springframework.security.core.userdetails.Use
     }
 
     public String getId() {
-        return user.getPerson().getPhone();
+        return user.getId().toString();
     }
 
     public String getRole() {

@@ -5,9 +5,11 @@
  */
 package com.teasoft.rydeon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,9 +30,10 @@ public class UserRole implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch=FetchType.LAZY)
     private Users user;
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     private Role role;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateTimeCreated;

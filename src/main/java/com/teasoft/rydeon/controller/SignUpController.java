@@ -208,7 +208,7 @@ public class SignUpController {
         //Persist person
         personService.save(person);
         return new JSONResponse(true, 0, otp, "SUCCESS");
-  
+
     }
     
     @RequestMapping("resources/rydeon/testuser")

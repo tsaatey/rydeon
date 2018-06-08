@@ -16,6 +16,11 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import java.util.List;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -24,17 +29,26 @@ import javax.persistence.Temporal;
 @Entity
 @Table
 public class Users implements Serializable {
+    @JsonView(Views.TokenUser.class)
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
+    @JsonView(Views.Public.class)
     @OneToOne
     private Person person;
-    private String password;
+    @JsonIgnore
+    private String password = "";
+    @JsonView(Views.TokenUser.class)
     private Boolean isActive;
+    @JsonView(Views.Public.class)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateTimeCreated;
+    @JsonView(Views.Public.class)
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateTimeUpdated;
+    @JsonView(Views.TokenUser.class)
+    @OneToMany(mappedBy="user", fetch=FetchType.EAGER)
+    private List<UserRole> roles;
     
     @PrePersist
     void createdAt() {
@@ -92,6 +106,14 @@ public class Users implements Serializable {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public List<UserRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<UserRole> roles) {
+        this.roles = roles;
     }
     
     
