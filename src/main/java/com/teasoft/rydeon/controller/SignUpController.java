@@ -5,6 +5,7 @@
  */
 package com.teasoft.rydeon.controller;
 
+import com.teasoft.rydeon.auth.TokenAuthService;
 import com.teasoft.rydeon.exception.MissingParameterException;
 import com.teasoft.rydeon.model.OTP;
 import com.teasoft.rydeon.model.Person;
@@ -20,6 +21,7 @@ import com.teasoft.rydeon.util.PasswordHash;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,6 +51,8 @@ public class SignUpController {
     SMSService smsService;
     @Autowired
     UsersRepo userRepo;
+    @Autowired
+    TokenAuthService tokenAuthService;
     
     @RequestMapping("resources/rydeon/testotp")
     @ResponseBody
@@ -160,25 +164,26 @@ public class SignUpController {
     
     /**
      * API to verify user's phone number
+     * @param response
      * @param data
      * @return
      * @throws MissingParameterException 
      */
     @RequestMapping(value="resources/rydeon/signup/verifycode", method=RequestMethod.POST)
     @ResponseBody
-    public JSONResponse verifyMember(@RequestBody Object data) throws MissingParameterException {
+    public JSONResponse verifyMember(HttpServletResponse response, @RequestBody Object data) throws MissingParameterException {
         Map<String, String> dataHash = (HashMap<String, String>) data;
         String phoneNumber, code;
         Person person;
         OTP otp;
         if(dataHash.containsKey("code")) {
-            phoneNumber = dataHash.get("phoneNumber");
+            code = dataHash.get("code");
         } else {
             throw new MissingParameterException("Code");
         }
         
         if(dataHash.containsKey("phoneNumber")) {
-            code = dataHash.get("code");
+            phoneNumber = dataHash.get("phoneNumber");
         } else {
             throw new MissingParameterException("Phone Number");
         }
@@ -196,7 +201,7 @@ public class SignUpController {
         }
         
         otp.setIsUsed(true);
-        otp = otpService.save(otp);
+        otpService.save(otp);
         
         //Set user as active
         Users user = userService.findByPerson(person);
@@ -206,10 +211,16 @@ public class SignUpController {
         //Set person as verified
         person.setVerified(Boolean.TRUE);
         //Persist person
-        personService.save(person);
-        return new JSONResponse(true, 0, otp, "SUCCESS");
-
+        person = personService.save(person);
+        
+        //Log user in and return token
+        String token = tokenAuthService.createTokenForUser(user);
+        response.addHeader("x-auth-token", token);
+        response.addHeader("Access-Control-Expose-Headers", "x-auth-token");
+        
+        return new JSONResponse(true, 0, person, "SUCCESS");
     }
+    
     
     @RequestMapping("resources/rydeon/testuser")
     @ResponseBody

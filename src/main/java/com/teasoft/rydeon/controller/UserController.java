@@ -6,8 +6,6 @@
 package com.teasoft.rydeon.controller;
 
 import com.teasoft.rydeon.exception.MissingParameterException;
-import com.teasoft.rydeon.model.Person;
-import com.teasoft.rydeon.model.Users;
 import com.teasoft.rydeon.service.UsersService;
 import com.teasoft.rydeon.util.Enums;
 import com.teasoft.rydeon.util.JSONResponse;
