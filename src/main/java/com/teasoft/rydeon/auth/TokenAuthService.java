@@ -28,10 +28,15 @@ public class TokenAuthService {
     @Value("${token.secret}")
     private String secret;
 
-    public String addAuthentication(HttpServletResponse response, TokenUser tokenUser) {
+    public String addAuthentication(HttpServletResponse response, TokenUser tokenUser) throws IOException {
         String token = createTokenForUser(tokenUser.getUser());
         response.addHeader(AUTH_HEADER_NAME, token);
         response.addHeader("Access-Control-Expose-Headers", "x-auth-token");
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        ObjectMapper mapper = new ObjectMapper();
+        response.getWriter().write(mapper.writeValueAsString(tokenUser.getUser().getPerson()));
         return token;
     }
 
