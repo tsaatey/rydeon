@@ -5,10 +5,10 @@
  */
 package com.teasoft.rydeon.controller;
 
-import com.teasoft.auth.model.Role;
 import com.teasoft.auth.model.UserRole;
 import com.teasoft.auth.model.Users;
 import com.teasoft.auth.repo.UsersRepo;
+import com.teasoft.auth.sec.PasswordHash;
 import com.teasoft.auth.sec.TokenAuthService;
 import com.teasoft.auth.service.RoleService;
 import com.teasoft.auth.service.UserRoleService;
@@ -24,7 +24,6 @@ import com.teasoft.rydeon.service.SMSService;
 import com.teasoft.rydeon.service.SignUpService;
 import com.teasoft.rydeon.util.Enums;
 import com.teasoft.rydeon.util.JSONResponse;
-import com.teasoft.rydeon.util.PasswordHash;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.util.ArrayList;
 import java.util.HashMap;
