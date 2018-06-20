@@ -3,11 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.teasoft.rydeon.controller;
 
 import com.teasoft.rydeon.exception.MissingParameterException;
-import com.teasoft.rydeon.model.Place;
 import com.teasoft.rydeon.model.Region;
 import com.teasoft.rydeon.service.RegionService;
 import com.teasoft.rydeon.util.JSONResponse;
@@ -28,26 +26,26 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class RegionController {
-    
+
     @Autowired
     RegionService regionService;
-    
+
     @RequestMapping(value = "api/rydeon/region", method = RequestMethod.GET)
     @ResponseBody
-    public JSONResponse getRegions() throws Exception {      
+    public JSONResponse getRegions() throws Exception {
         List<Region> regions = regionService.findAll();
         return new JSONResponse(true, regions.size(), regions, "SUCCESS");
     }
-    
+
     @RequestMapping(value = "api/rydeon/region", method = RequestMethod.POST)
     @ResponseBody
-    public JSONResponse saveRegion(@RequestParam("name") String region) throws Exception {   
+    public JSONResponse saveRegion(@RequestParam("name") String region) throws Exception {
         Region r = new Region();
         r.setRegionName(region);
         r = regionService.save(r);
         return new JSONResponse(true, 1, r, "SUCCESS");
     }
-    
+
     @ExceptionHandler(NullPointerException.class)
     @ResponseBody
     public JSONResponse nullPointerException(NullPointerException e) {

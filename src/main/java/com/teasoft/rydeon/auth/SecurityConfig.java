@@ -1,11 +1,15 @@
 package com.teasoft.rydeon.auth;
 
+import com.teasoft.auth.sec.LoginFilter;
+import com.teasoft.auth.sec.MyPasswordEncoder;
+import com.teasoft.auth.sec.TokenAuthFilter;
+import com.teasoft.auth.sec.TokenAuthService;
+import com.teasoft.auth.sec.UserDetailsService;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -61,7 +65,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/licence.html").permitAll()
                 .antMatchers("/health").permitAll()
-                .antMatchers("/admin/**").hasRole("1")
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(corsFilter(), ChannelProcessingFilter.class)

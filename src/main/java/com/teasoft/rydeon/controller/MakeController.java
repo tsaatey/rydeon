@@ -8,7 +8,6 @@ package com.teasoft.rydeon.controller;
 
 import com.teasoft.rydeon.exception.MissingParameterException;
 import com.teasoft.rydeon.model.Make;
-import com.teasoft.rydeon.model.Region;
 import com.teasoft.rydeon.repository.MakeRepo;
 import com.teasoft.rydeon.util.JSONResponse;
 import io.jsonwebtoken.ExpiredJwtException;

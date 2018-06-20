@@ -3,17 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.teasoft.rydeon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.teasoft.auth.model.Users;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -27,17 +29,22 @@ import javax.persistence.Temporal;
 @Entity
 @Table
 public class Person implements Serializable {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
+    @JsonIgnore
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
+    private Users user;
     private String firstname;
     private String lastname;
     private String othernames;
-    @Column(unique=true)
+    @Column(unique = true)
     private String email;
-    @Column(unique=true)
+    @Column(unique = true)
     private String phone;
     private String gender;
+    @Lob
     private byte[] image;
     private String digitalAddress;
     private Boolean verified;
@@ -47,16 +54,17 @@ public class Person implements Serializable {
     private Date dateTimeCreated;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateTimeUpdated;
-    
+
     @PrePersist
     void createdAt() {
         this.dateTimeCreated = this.dateTimeUpdated = new Date();
     }
+
     @PreUpdate
     void updatedAt() {
         this.dateTimeUpdated = new Date();
     }
-    
+
     public Long getId() {
         return id;
     }
@@ -160,5 +168,13 @@ public class Person implements Serializable {
     public void setVerified(Boolean verified) {
         this.verified = verified;
     }
-    
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
 }

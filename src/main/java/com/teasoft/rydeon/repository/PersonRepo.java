@@ -6,6 +6,7 @@
 
 package com.teasoft.rydeon.repository;
 
+import com.teasoft.auth.model.Users;
 import com.teasoft.rydeon.model.Person;
 import org.springframework.data.repository.CrudRepository;
 
@@ -16,4 +17,5 @@ import org.springframework.data.repository.CrudRepository;
 public interface PersonRepo extends CrudRepository<Person, Long> {
     Person findByEmailOrPhone(String Email, String phone);
     Person findByPhone(String phone);
+    Person findByUser(Users user);
 }
