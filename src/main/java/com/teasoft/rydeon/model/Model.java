@@ -6,6 +6,7 @@
 
 package com.teasoft.rydeon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,6 +26,7 @@ public class Model implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
+    @JsonIgnore
     @ManyToOne(fetch=FetchType.LAZY)
     private Make make;
     private String modelName;
