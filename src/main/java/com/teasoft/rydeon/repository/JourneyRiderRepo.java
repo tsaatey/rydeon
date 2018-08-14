@@ -18,6 +18,6 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface JourneyRiderRepo extends CrudRepository<JourneyRider, Long>{
     Integer countByJourney(Journey journey);
-    List<JourneyRider> findByPerson(Person person);
+    List<JourneyRider> findByPersonOrderByDateTimeCreatedDesc(Person person);
     List<JourneyRider> findByJourney(Journey journey);
 }

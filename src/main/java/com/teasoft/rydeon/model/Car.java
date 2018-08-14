@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -34,6 +35,7 @@ public class Car implements Serializable {
     @ManyToOne
     private Model model;
     private Integer year;
+    @Lob
     private byte[] image;
     @ManyToOne
     private Person addedBy;

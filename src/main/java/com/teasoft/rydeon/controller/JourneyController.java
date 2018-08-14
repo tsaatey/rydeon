@@ -5,10 +5,14 @@
  */
 package com.teasoft.rydeon.controller;
 
+import com.teasoft.auth.model.Users;
+import com.teasoft.auth.service.UsersService;
 import com.teasoft.rydeon.exception.MissingParameterException;
+import com.teasoft.rydeon.model.Car;
 import com.teasoft.rydeon.model.Journey;
 import com.teasoft.rydeon.model.Person;
 import com.teasoft.rydeon.model.Place;
+import com.teasoft.rydeon.repository.CarRepo;
 import com.teasoft.rydeon.repository.JourneyRepo;
 import com.teasoft.rydeon.repository.PersonRepo;
 import com.teasoft.rydeon.repository.PlaceRepo;
@@ -47,12 +51,14 @@ public class JourneyController {
     PersonRepo personRepo;
     @Autowired
     JourneyRepo journeyRepo;
+    @Autowired
+    CarRepo carRepo;
+    @Autowired
+    UsersService userService;
 
     /**
      * Creates a journey
      *
-     * @param lastname
-     * @param person
      * @param source
      * @param destination
      * @param journeyDate
@@ -61,31 +67,35 @@ public class JourneyController {
      * @param sourceCoords
      * @param destCoords
      * @param amount
+     * @param carId
      * @param startTime
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "api/rydeon/journey", method = RequestMethod.POST)
     @ResponseBody
-    public JSONResponse createJourney(@RequestParam("person") String person, @RequestParam(value = "source") String source,
+    public JSONResponse createJourney(@RequestParam(value = "source") String source,
             @RequestParam("destination") String destination, @RequestParam("journeyDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date journeyDate,
             @RequestParam("status") String status, @RequestParam("maxRiders") Integer maxRiders,
             @RequestParam("startTime") @DateTimeFormat(pattern = "HH:mm") Date startTime,
             @RequestParam(value = "sourceCoord", required = false) String sourceCoords,
             @RequestParam(value = "destCoord", required = false) String destCoords,
-            @RequestParam(value = "amount") Double amount) throws Exception {
+            @RequestParam(value = "amount") Double amount, @RequestParam(value = "carId") Long carId) throws Exception {
 
         Journey journey = new Journey();
-        Person p = personRepo.findByEmailOrPhone(person, person);
+        Users user = userService.getCurrentUsers();
+        Person person = personRepo.findByUser(user);
         journey.setDestination(destination);
         journey.setSource(source);
         journey.setJourneyDate(journeyDate);
         journey.setStartTime(startTime);
         journey.setJourneyStatus(status);
-        journey.setPerson(p);
+        journey.setPerson(person);
         journey.setMaxRiders(maxRiders);
         journey.setAmount(amount);
         journey.setDestCoord(destCoords);
+        Car car = carRepo.findOne(carId);
+        journey.setCar(car);
         if (sourceCoords != null) {
             journey.setSourceCoord(sourceCoords);
         }
@@ -96,7 +106,7 @@ public class JourneyController {
 
     @RequestMapping(value = "api/rydeon/journey", method = RequestMethod.GET)
     @ResponseBody
-    public JSONResponse createJourney(@RequestParam(value = "source", required = false) String source,
+    public JSONResponse getJourney(@RequestParam(value = "source", required = false) String source,
             @RequestParam(value = "destination", required = false) String destination,
             @RequestParam(value = "status") String status) throws Exception {
 
@@ -119,6 +129,15 @@ public class JourneyController {
             return new JSONResponse(true, journeys.size(), journeys, Enums.JSONResponseMessage.SUCCESS.toString());
         }
 
+    }
+    
+    @RequestMapping(value="api/rydeon/my/journey/all", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONResponse myJourneys() {
+        Users user = userService.getCurrentUsers();
+        Person person = personRepo.findByUser(user);
+        List<Journey> journeys = journeyRepo.findByPersonOrderByJourneyDateDesc(person);
+        return new JSONResponse(true, journeys.size(), journeys, Enums.JSONResponseMessage.SUCCESS.toString());
     }
 
     @RequestMapping(value = "api/rydeon/journey/search", method = RequestMethod.GET)

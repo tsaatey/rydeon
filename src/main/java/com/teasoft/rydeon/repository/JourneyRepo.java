@@ -24,6 +24,7 @@ public interface JourneyRepo extends CrudRepository<Journey, Long> {
     List<Journey> findByPersonAndStatusOrderByJourneyDateDesc(Person person, String status);
     List<Journey> findBySourceAndStatusOrderByJourneyDateDesc(String source, String status);
     List<Journey> findByDestinationAndStatus(String destination, String status);
+    List<Journey> findByPersonOrderByJourneyDateDesc(Person person);
     
     @Query(value = "SELECT p FROM Journey p WHERE p.source LIKE %:searchTerm1% or p.destination LIKE %:searchTerm2%")
     List<Journey> search(@Param("searchTerm1") String searchTerm1, @Param("searchTerm2") String searchTerm2);

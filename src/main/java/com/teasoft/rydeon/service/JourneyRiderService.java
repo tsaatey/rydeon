@@ -24,7 +24,7 @@ public class JourneyRiderService {
     JourneyRiderRepo jrRepo;
     
     public List<JourneyRider> findByPerson(Person person) {
-        return jrRepo.findByPerson(person);
+        return jrRepo.findByPersonOrderByDateTimeCreatedDesc(person);
     }
     
     public List<JourneyRider> findByJourney(Journey journey) {

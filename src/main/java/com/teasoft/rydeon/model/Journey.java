@@ -5,6 +5,7 @@
  */
 package com.teasoft.rydeon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.teasoft.rydeon.util.Enums;
 import java.io.Serializable;
 import java.util.Date;
@@ -29,12 +30,14 @@ public class Journey implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
+    @JsonIgnore
     private Person person;   
     private String source;
     private String destination;
     private String sourceCoord;
     private String destCoord;
-    
+    @ManyToOne
+    private Car car;
     @Temporal(javax.persistence.TemporalType.TIME)
     private Date startTime;
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -168,6 +171,14 @@ public class Journey implements Serializable {
 
     public void setDestCoord(String destCoord) {
         this.destCoord = destCoord;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
     }
     
     
