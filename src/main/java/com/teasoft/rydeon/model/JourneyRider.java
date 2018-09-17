@@ -5,6 +5,7 @@
  */
 package com.teasoft.rydeon.model;
 
+import com.teasoft.rydeon.util.Enums;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
@@ -16,13 +17,14 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.UniqueConstraint;
 
 /**
  *
  * @author Theodore Elikem Attigah
  */
 @Entity
-@Table
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"journey_id", "person_user_id"})})
 public class JourneyRider implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,6 +37,11 @@ public class JourneyRider implements Serializable {
     private Date dateTimeCreated;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateTimeUpdated;
+    private String status;
+
+    public JourneyRider() {
+        this.status = Enums.RideRequestStatus.PENDING.toString();
+    }
     
     @PrePersist
     void createdAt() {
@@ -84,5 +91,13 @@ public class JourneyRider implements Serializable {
     public void setDateTimeUpdated(Date dateTimeUpdated) {
         this.dateTimeUpdated = dateTimeUpdated;
     }
-     
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }

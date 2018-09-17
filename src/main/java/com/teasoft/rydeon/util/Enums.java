@@ -29,5 +29,11 @@ public class Enums {
         CANCELLED,
         COMPLETED
     }
+    
+    public enum RideRequestStatus {
+        PENDING,
+        APPROVED,
+        REJECTED
+    }
 
 }

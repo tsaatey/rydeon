@@ -10,6 +10,7 @@ import com.teasoft.rydeon.model.Journey;
 import com.teasoft.rydeon.model.JourneyRider;
 import com.teasoft.rydeon.model.Person;
 import com.teasoft.rydeon.repository.JourneyRiderRepo;
+import com.teasoft.rydeon.util.Enums;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,17 @@ public class JourneyRiderService {
     
     public JourneyRider save(JourneyRider journeyRider) {
         return jrRepo.save(journeyRider);
+    }
+    
+    public Integer countByJourneyAndStatus(Journey journey, String status) {
+        return jrRepo.countByJourneyAndStatus(journey, status);
+    }
+    
+    public Boolean isJourneyFull(Journey journey) {
+        return journey.getMaxRiders() >= jrRepo.countByJourneyAndStatus(journey, Enums.RideRequestStatus.APPROVED.toString());
+    }
+    
+    public JourneyRider findByJournerAndPerson(Journey journey, Person person) {
+        return jrRepo.findByJourneyAndPerson(journey, person);
     }
 }

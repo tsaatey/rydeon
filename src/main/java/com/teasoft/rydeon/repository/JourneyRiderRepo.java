@@ -17,7 +17,8 @@ import org.springframework.data.repository.CrudRepository;
  * @author Theodore Elikem Attigah
  */
 public interface JourneyRiderRepo extends CrudRepository<JourneyRider, Long>{
-    Integer countByJourney(Journey journey);
+    Integer countByJourneyAndStatus(Journey journey, String status);
     List<JourneyRider> findByPersonOrderByDateTimeCreatedDesc(Person person);
     List<JourneyRider> findByJourney(Journey journey);
+    JourneyRider findByJourneyAndPerson(Journey journey, Person person);
 }

@@ -15,6 +15,7 @@ import com.teasoft.rydeon.model.Region;
 import com.teasoft.rydeon.repository.JourneyRepo;
 import com.teasoft.rydeon.repository.PersonRepo;
 import com.teasoft.rydeon.service.JourneyRiderService;
+import com.teasoft.rydeon.util.Enums;
 import com.teasoft.rydeon.util.JSONResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import java.util.List;
@@ -72,11 +73,42 @@ public class JourneyRiderController {
         if(p == null || j == null) {
             return new JSONResponse(false, 0, null, "Invalid Email or Journey");
         }
+        
+        if(jrService.isJourneyFull(j)) {
+            return new JSONResponse(false, 0, null, "Journey is full");
+        }
+        
         JourneyRider jRider = new JourneyRider();
         jRider.setJourney(j);
         jRider.setPerson(p);
 
         return new JSONResponse(true, 1, jrService.save(jRider), "SUCCESS");
+        
+    }
+    
+    @RequestMapping(value = "api/rydeon/journey/approve", method=RequestMethod.POST)
+    @ResponseBody
+    public JSONResponse approveRideRequest(@RequestParam("status") Boolean status, 
+            @RequestParam("journey") Integer journey, @RequestParam("person") String person) {
+        
+        Person p = personRepo.findByEmailOrPhone(person, person);
+        Journey j = journeyRepo.findOne(journey.longValue());
+        if(p == null || j == null) {
+            return new JSONResponse(false, 0, null, "Invalid Email or Journey");
+        }
+        
+        JourneyRider jRider = jrService.findByJournerAndPerson(j, p);
+        if(jRider == null) {
+            return new JSONResponse(false, 0, null, "Journey not found");
+        }
+        
+        if(status) {
+            jRider.setStatus(Enums.RideRequestStatus.APPROVED.toString());
+        } else {
+            jRider.setStatus(Enums.RideRequestStatus.REJECTED.toString());
+        }
+        
+        return new JSONResponse(true, 1, jrService.save(jRider), Enums.JSONResponseMessage.SUCCESS.toString());
         
     }
     
