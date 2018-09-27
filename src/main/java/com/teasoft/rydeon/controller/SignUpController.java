@@ -81,6 +81,13 @@ public class SignUpController {
         return otpService.generatePassword();
     }
 
+    /**
+     * Signs a user up using the Facebook graph API
+     * @param response
+     * @param data a map that should contain Facebook token
+     * @return
+     * @throws Exception 
+     */
     @RequestMapping(value = "resources/fbsignin", method = RequestMethod.POST)
     @ResponseBody
     public JSONResponse fbSignup(HttpServletResponse response, @RequestBody Object data) throws Exception {

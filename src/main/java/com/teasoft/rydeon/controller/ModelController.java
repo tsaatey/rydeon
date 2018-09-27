@@ -35,6 +35,11 @@ public class ModelController {
     @Autowired
     MakeRepo makeRepo;
     
+    /**
+     * Returns a list of models of a particular make
+     * @param makeId the make id
+     * @return a list of models of a particular make
+     */
     @RequestMapping(value="api/rydeon/model", method=RequestMethod.GET)
     @ResponseBody
     public JSONResponse getModel(@RequestParam Integer makeId) {
@@ -47,7 +52,12 @@ public class ModelController {
         return new JSONResponse(true, models.size(), models, Enums.JSONResponseMessage.SUCCESS.toString());
     }
     
-    
+    /**
+     * Adds a model to a make
+     * @param makeId the make id
+     * @param modelName the name of the model
+     * @return the saved model object
+     */
     @RequestMapping(value="api/rydeon/model", method=RequestMethod.POST)
     @ResponseBody
     public JSONResponse saveModel(@RequestParam Integer makeId, @RequestParam String modelName) {
@@ -61,9 +71,6 @@ public class ModelController {
         model = modelRepo.save(model);
         return new JSONResponse(true, 1, model, Enums.JSONResponseMessage.SUCCESS.toString());
     }
-    
-    
-    
     
     @ExceptionHandler(NullPointerException.class)
     @ResponseBody

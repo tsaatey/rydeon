@@ -59,17 +59,17 @@ public class JourneyController {
     /**
      * Creates a journey
      *
-     * @param source
-     * @param destination
-     * @param journeyDate
-     * @param status
-     * @param maxRiders
-     * @param sourceCoords
-     * @param destCoords
-     * @param amount
-     * @param carId
-     * @param startTime
-     * @return
+     * @param source where the journey will start from
+     * @param destination where the journey will end
+     * @param journeyDate the date journey will be embarked on
+     * @param status the status of the journey. A journey can can STARTED, CANCELED, PENDING  or COMPLETED
+     * @param maxRiders the maximum number of riders for the journey
+     * @param sourceCoords geographical coordinates of the journey source
+     * @param destCoords geographical coordinates of the journey destination
+     * @param amount maximum amount that will be charged
+     * @param carId a numerical id of the car that will be used for the journey
+     * @param startTime time the journey will start
+     * @return the saved journey
      * @throws Exception
      */
     @RequestMapping(value = "api/rydeon/journey", method = RequestMethod.POST)
@@ -104,6 +104,14 @@ public class JourneyController {
 
     }
 
+    /**
+     * Searches for a journey given the journey status and either the source or destination
+     * @param source where the journey will start from
+     * @param destination where the journey will end
+     * @param status the status of the journey. A journey can can STARTED, CANCELED, PENDING  or COMPLETED
+     * @return a list journeys that match the search criteria
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/journey", method = RequestMethod.GET)
     @ResponseBody
     public JSONResponse getJourney(@RequestParam(value = "source", required = false) String source,
@@ -112,25 +120,25 @@ public class JourneyController {
 
         if (destination == null) {
             if (source != null) {
-//                Place sour = placeRepo.findOne(source.longValue());
                 List<Journey> journeys = journeyService.findBySourceAndStatus(source, status);
                 return new JSONResponse(true, journeys.size(), journeys, Enums.JSONResponseMessage.SUCCESS.toString());
             }
             List<Journey> journeys = journeyService.findAll();
             return new JSONResponse(true, journeys.size(), journeys, Enums.JSONResponseMessage.SUCCESS.toString());
         } else if (source == null) {
-//            Place dest = placeRepo.findOne(destination.longValue());
             List<Journey> journeys = journeyService.findByDestinationAndStatus(destination, status);
             return new JSONResponse(true, journeys.size(), journeys, Enums.JSONResponseMessage.SUCCESS.toString());
         } else {
-//            Place dest = placeRepo.findOne(destination.longValue());
-//            Place sour = placeRepo.findOne(source.longValue());
             List<Journey> journeys = journeyService.findBySourceAndDestinationAndStatus(source, destination, status);
             return new JSONResponse(true, journeys.size(), journeys, Enums.JSONResponseMessage.SUCCESS.toString());
         }
 
     }
     
+    /**
+     * Returns all journeys in the db
+     * @return all journeys in the db
+     */
     @RequestMapping(value="api/rydeon/my/journey/all", method = RequestMethod.GET)
     @ResponseBody
     public JSONResponse myJourneys() {
@@ -140,6 +148,12 @@ public class JourneyController {
         return new JSONResponse(true, journeys.size(), journeys, Enums.JSONResponseMessage.SUCCESS.toString());
     }
 
+    /**
+     * Searches given a specified key for journeys that match the search key.
+     * @param key the search term. e.g. Aflao to Accra
+     * @return a list of journeys that match the specified key
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/journey/search", method = RequestMethod.GET)
     @ResponseBody
     public JSONResponse searchJourney(@RequestParam(value = "key") String key) throws Exception {
@@ -154,19 +168,14 @@ public class JourneyController {
         
         if (destination == null) {
             if (source != null) {
-//                Place sour = placeRepo.findOne(source.longValue());
                 List<Journey> journeys = journeyRepo.searchSource(source);
                 return new JSONResponse(true, journeys.size(), journeys, Enums.JSONResponseMessage.SUCCESS.toString());
             }
-//            List<Journey> journeys = journeyService.findAll();
             return new JSONResponse(true, 0, new ArrayList(), Enums.JSONResponseMessage.SUCCESS.toString());
         } else if (source == null) {
-//            Place dest = placeRepo.findOne(destination.longValue());
             List<Journey> journeys = journeyRepo.searchDestination(destination);
             return new JSONResponse(true, journeys.size(), journeys, Enums.JSONResponseMessage.SUCCESS.toString());
         } else {
-//            Place dest = placeRepo.findOne(destination.longValue());
-//            Place sour = placeRepo.findOne(source.longValue());
             List<Journey> journeys = journeyRepo.search(source, destination);
             return new JSONResponse(true, journeys.size(), journeys, Enums.JSONResponseMessage.SUCCESS.toString());
         }

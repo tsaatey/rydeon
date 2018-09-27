@@ -61,7 +61,6 @@ public class CarController {
     /**
      * Returns cars for a specified owner
      *
-     * @param username
      * @return
      * @throws Exception
      */
@@ -77,12 +76,24 @@ public class CarController {
         return new JSONResponse(true, cars.size(), cars, "SUCCESS");
     }
 
+    /**
+     * Saves a car object to the db
+     * @param response the response object
+     * @param request the request object
+     * @param make the make of the car
+     * @param model the model of the car
+     * @param year the year the car was manufactured
+     * @param regNumber the car's registration number
+     * @param image the image of the car
+     * @return
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/car", method = RequestMethod.POST)
     @ResponseBody
     public JSONResponse saveCar(HttpServletResponse response, HttpServletRequest request, 
             @RequestParam("make") Integer make, @RequestParam("model") Integer model,
             @RequestParam("year") Integer year, @RequestParam("regNumber") String regNumber,
-            @RequestParam(value = "image", required = false) MultipartFile file) throws Exception {
+            @RequestParam(value = "image", required = false) MultipartFile image) throws Exception {
         
         Users currentUser = userService.getCurrentUsers();
         Person person = personService.findByUser(currentUser);
@@ -102,16 +113,16 @@ public class CarController {
         car.setOwner(person);
         car.setAddedBy(person);
         
-        if (!file.isEmpty()) {
-            BufferedImage image = ImageIO.read(file.getInputStream());
-            Integer width = image.getWidth();
-            Integer height = image.getHeight();
+        if (!image.isEmpty()) {
+            BufferedImage img = ImageIO.read(image.getInputStream());
+            Integer width = img.getWidth();
+            Integer height = img.getHeight();
             //Math.abs(width - height) > MAX_IMAGE_DIM_DIFF
             if (false) {
                 return new JSONResponse(false, 0, null, "Invalid Image dimensions");
             } else {
-                //Resize image
-                BufferedImage originalImage = ImageIO.read(file.getInputStream());
+                //Resize img
+                BufferedImage originalImage = ImageIO.read(image.getInputStream());
                 int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
 
 //                BufferedImage resizeImagePng = imageService.resizeImage(originalImage, IMG_WIDTH, IMG_HEIGHT, type);
@@ -123,9 +134,9 @@ public class CarController {
                     dir.mkdirs();
                 }
 
-                File serverFile = new File(dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
+                File serverFile = new File(dir.getAbsolutePath() + File.separator + image.getOriginalFilename());
 
-                switch (file.getContentType()) {
+                switch (image.getContentType()) {
                     case "image/png":
                         ImageIO.write(resizeImagePng, "png", serverFile);
                         break;
@@ -141,7 +152,7 @@ public class CarController {
 
                 byte[] imageInByte;
                 try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                    switch (file.getContentType()) {
+                    switch (image.getContentType()) {
                         case "image/png":
                             ImageIO.write(resizedImage, "png", baos);
                             break;
@@ -163,12 +174,6 @@ public class CarController {
         
         car = carService.save(car);
         return new JSONResponse(true, 0, car, "SUCCESS");
-    }
-
-    @RequestMapping(value = "resources/rydeon/hello", method = RequestMethod.GET)
-    @ResponseBody
-    public String printHello() throws Exception {
-       return "Hello Worldl";
     }
 
     @ExceptionHandler(NullPointerException.class)

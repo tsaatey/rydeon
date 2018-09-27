@@ -34,7 +34,12 @@ public class PersonEmergencyContactController {
     @Autowired
     SMSService smsService;
     
-    
+    /**
+     * Returns the emergency contact of a person
+     * @param person the email or phone number of the person
+     * @return the emergency contact of a person
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/emergency", method = RequestMethod.GET)
     @ResponseBody
     public JSONResponse getContact(@RequestParam("person") String person) throws Exception {
@@ -44,6 +49,13 @@ public class PersonEmergencyContactController {
         return new JSONResponse(true, pec.size(), pec, "SUCCESS");
     }
     
+    /**
+     * Sends SMS to a specified contact
+     * @param message the content of the SMS
+     * @param to destination contact
+     * @return
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/emergency/sms", method = RequestMethod.GET)
     @ResponseBody
     public JSONResponse sendMessage(@RequestParam("message") String message,
@@ -51,6 +63,14 @@ public class PersonEmergencyContactController {
         return new JSONResponse(true, 0, smsService.sendSMS(to, message), "SUCCESS");
     }
     
+    /**
+     * Adds emergency contact to a person
+     * @param person the person to add emergency contact for
+     * @param contactName name of the emergency contact
+     * @param phone phone number of the emergency contact
+     * @return
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/emergency", method = RequestMethod.POST)
     @ResponseBody
     public JSONResponse saveContact(@RequestParam("person") String person, @RequestParam("contactName") String contactName,

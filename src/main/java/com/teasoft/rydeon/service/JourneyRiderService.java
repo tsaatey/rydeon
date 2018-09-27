@@ -24,6 +24,10 @@ public class JourneyRiderService {
     @Autowired
     JourneyRiderRepo jrRepo;
     
+    public JourneyRider findOne(Long id) {
+        return jrRepo.findOne(id);
+    }
+    
     public List<JourneyRider> findByPerson(Person person) {
         return jrRepo.findByPersonOrderByDateTimeCreatedDesc(person);
     }

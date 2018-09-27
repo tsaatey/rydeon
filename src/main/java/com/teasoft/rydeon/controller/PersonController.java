@@ -48,6 +48,14 @@ public class PersonController {
     @Autowired
     ImageService imageService;
 
+    /**
+     * Uploads image for a person. The image is uploaded for the current user so does not require any person id
+     * @param response
+     * @param request
+     * @param file the image to upload
+     * @return the updated person object
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/image/upload", method = RequestMethod.POST)
     @ResponseBody
     public JSONResponse uploadImage(HttpServletResponse response, HttpServletRequest request,
@@ -115,6 +123,10 @@ public class PersonController {
         return new JSONResponse(true, 1, personService.save(person), Enums.JSONResponseMessage.SUCCESS.toString());
     }
 
+    /**
+     * Queries the details of the current user.
+     * @return details of the current user.
+     */
     @RequestMapping(value = "api/rydeon/person/details", method = RequestMethod.GET)
     @ResponseBody
     public JSONResponse getPersonDetails() {

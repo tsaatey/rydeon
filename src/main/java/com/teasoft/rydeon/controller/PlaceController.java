@@ -35,6 +35,11 @@ public class PlaceController {
     @Autowired
     RegionService regionService;
 
+    /**
+     * Returns all places in the db
+     * @return a list of all places in the db
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/place", method = RequestMethod.GET)
     @ResponseBody
     public JSONResponse getPlaces() throws Exception {
@@ -42,6 +47,12 @@ public class PlaceController {
         return new JSONResponse(true, places.size(), places, "SUCCESS");
     }
 
+    /**
+     * Returns a list of places based on a search term
+     * @param search the search term to search with
+     * @return a list of places based on a search term
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/place/search", method = RequestMethod.GET)
     @ResponseBody
     public JSONResponse searchPlaces(@RequestParam("search") String search) throws Exception {
@@ -49,6 +60,13 @@ public class PlaceController {
         return new JSONResponse(true, places.size(), places, "SUCCESS");
     }
 
+    /**
+     * Adds a place to the db
+     * @param name name of the place or location to add
+     * @param region region or state of the location
+     * @return the added object
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/place", method = RequestMethod.POST)
     @ResponseBody
     public JSONResponse getPlaces(@RequestParam("name") String name,

@@ -30,6 +30,11 @@ public class MakeController {
     @Autowired
     MakeRepo makeRepo;
     
+    /**
+     * Returns the list of all car makes in the db
+     * @return the list of all car makes in the db
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/make", method = RequestMethod.GET)
     @ResponseBody
     public JSONResponse getMakes() throws Exception {      
@@ -37,6 +42,12 @@ public class MakeController {
         return new JSONResponse(true, makes.size(), makes, "SUCCESS");
     }
     
+    /**
+     * Adds a car make to the db
+     * @param make a make or a car manufacturer
+     * @return the make object added
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/make", method = RequestMethod.POST)
     @ResponseBody
     public JSONResponse saveMake(@RequestParam("make") String make) throws Exception {      

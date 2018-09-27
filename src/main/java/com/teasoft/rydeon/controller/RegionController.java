@@ -30,6 +30,11 @@ public class RegionController {
     @Autowired
     RegionService regionService;
 
+    /**
+     * Returns the list of all regions in the db
+     * @return the list of all regions in the db
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/region", method = RequestMethod.GET)
     @ResponseBody
     public JSONResponse getRegions() throws Exception {
@@ -37,6 +42,12 @@ public class RegionController {
         return new JSONResponse(true, regions.size(), regions, "SUCCESS");
     }
 
+    /**
+     * Adds a region to db
+     * @param region name of region to add
+     * @return the added region
+     * @throws Exception 
+     */
     @RequestMapping(value = "api/rydeon/region", method = RequestMethod.POST)
     @ResponseBody
     public JSONResponse saveRegion(@RequestParam("name") String region) throws Exception {
