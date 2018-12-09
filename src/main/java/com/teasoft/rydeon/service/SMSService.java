@@ -25,8 +25,9 @@ public class SMSService {
         headers.add("Authorization", "Basic a3p3cmdiY2s6YWF3eWF0Z3U=");
         
         Map<String, Object> dat = new HashMap();
-       
-        dat.put("From", "rydeOn GH");
+        
+//        dat.put("From", "rydeOn GH");
+        dat.put("From", "VMA");
         dat.put("To", to);
         dat.put("Content", content);
         dat.put("RegisteredDelivery", true);

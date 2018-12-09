@@ -93,11 +93,17 @@ public class SignUpController {
     public JSONResponse fbSignup(HttpServletResponse response, @RequestBody Object data) throws Exception {
         Map<String, Object> dataHash = (HashMap<String, Object>) data;
         Map<String, Boolean> registered = new HashMap<String, Boolean>();
-        String token;
+        String token, deviceToken;
         if (dataHash.containsKey("token")) {
             token = (String) dataHash.get("token");
         } else {
             return new JSONResponse(false, 0, "token", "token is required");
+        }
+        
+        if(dataHash.containsKey("deviceToken")) {
+            deviceToken = (String) dataHash.get("deviceToken");
+        } else {
+            throw new MissingParameterException("deviceToken");
         }
 
         //Make a call to facebook to verify token
@@ -114,6 +120,7 @@ public class SignUpController {
             person.setPhone(phoneNumber);
             person.setVerified(Boolean.TRUE);
             person.setUser(userRole.getUser());
+            person.setDeviceToken(deviceToken);
             personRepo.save(person);
             //Log user in and return token
             Users uUser = userRepo.queryUser(phoneNumber);

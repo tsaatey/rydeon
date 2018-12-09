@@ -35,5 +35,10 @@ public class Enums {
         APPROVED,
         REJECTED
     }
+    
+    public enum NotificationType {
+        CANTEEN,
+        CUSTOMER
+    }
 
 }

@@ -44,6 +44,7 @@ public class Person implements Serializable {
     @Column(unique = true)
     private String phone;
     private String gender;
+    private String deviceToken;
     @Lob
     private byte[] image;
     private String digitalAddress;
@@ -177,4 +178,12 @@ public class Person implements Serializable {
         this.user = user;
     }
 
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
+    
 }
