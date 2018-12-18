@@ -220,6 +220,82 @@ public class SignUpController {
         return new JSONResponse(true, 1, "", "SUCCESS");
 
     }
+    
+    /**
+     * API for creating employee accounts
+     * @param data
+     * @return
+     * @throws Exception 
+     */
+    @RequestMapping(value = "admin/rydeon/create/employee/account", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONResponse createEmployeeAccount(@RequestBody Object data) throws Exception {
+        Map<String, Object> dataHash = (HashMap<String, Object>) data;
+        Person person = new Person();
+        Users users = new Users();
+        String password, confirmPassword;
+        if (dataHash.containsKey("firstname")) {
+            person.setFirstname((String) dataHash.get("firstname"));
+        } else {
+            return new JSONResponse(false, 0, "firstname", "firstname is required");
+        }
+        if (dataHash.containsKey("lastname")) {
+            person.setLastname((String) dataHash.get("lastname"));
+        } else {
+            return new JSONResponse(false, 0, "lastname", "lastname is required");
+        }
+        if (dataHash.containsKey("gender")) {
+            person.setGender((String) dataHash.get("gender"));
+        } else {
+            return new JSONResponse(false, 0, "gender", "gender is required");
+        }
+        if (dataHash.containsKey("email")) {
+            person.setEmail((String) dataHash.get("email"));
+            users.setEmail((String) dataHash.get("email"));
+        } else {
+            return new JSONResponse(false, 0, "email", "email is required");
+        }
+        if (dataHash.containsKey("username")) {
+            users.setUsername((String) dataHash.get("username"));
+        } else {
+            return new JSONResponse(false, 0, "gender", "gender is required");
+        }
+        if (dataHash.containsKey("phoneNumber")) {
+            person.setPhone((String) dataHash.get("phoneNumber"));
+            users.setPhone((String) dataHash.get("phoneNumber"));
+        } else {
+            return new JSONResponse(false, 0, "Phone Number", "Phone Number is required");
+        }
+        if (dataHash.containsKey("password")) {
+            password = (String) dataHash.get("password");
+        } else {
+            return new JSONResponse(false, 0, "Password", "Password is required");
+        }
+        if (dataHash.containsKey("confirmPassword")) {
+            confirmPassword = (String) dataHash.get("confirmPassword");
+        } else {
+            return new JSONResponse(false, 0, "Confirm Password", "Confirm Password is required");
+        }
+
+        if (!password.equals(confirmPassword)) {
+            return new JSONResponse(false, 0, "Password Mismatch", "Passwords do not match");
+        }
+
+        //Check if user is already registered
+        if (personService.findByPhone(person.getPhone()) != null) {
+            return new JSONResponse(false, 0, person.getPhone() + " is already registered", "Already Registered");
+        }
+
+        //Persist user and use the persisted user to persist person
+        users.setPassword(PasswordHash.createHash((String) dataHash.get("password")));
+        users.setEnabled(true);
+        users = userService.save(users);
+        person.setUser(users);
+        person = personService.save(person);
+
+        return new JSONResponse(true, 1, "", "SUCCESS");
+
+    }
 
     /**
      * Resend verification code API. It resends the code to the user's provided
