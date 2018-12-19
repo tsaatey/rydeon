@@ -258,7 +258,7 @@ public class SignUpController {
         if (dataHash.containsKey("username")) {
             users.setUsername((String) dataHash.get("username"));
         } else {
-            return new JSONResponse(false, 0, "gender", "gender is required");
+            return new JSONResponse(false, 0, "username", "username is required");
         }
         if (dataHash.containsKey("phoneNumber")) {
             person.setPhone((String) dataHash.get("phoneNumber"));
