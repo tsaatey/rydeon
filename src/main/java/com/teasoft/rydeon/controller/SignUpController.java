@@ -83,10 +83,11 @@ public class SignUpController {
 
     /**
      * Signs a user up using the Facebook graph API
+     *
      * @param response
      * @param data a map that should contain Facebook token
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @RequestMapping(value = "resources/fbsignin", method = RequestMethod.POST)
     @ResponseBody
@@ -99,8 +100,8 @@ public class SignUpController {
         } else {
             return new JSONResponse(false, 0, "token", "token is required");
         }
-        
-        if(dataHash.containsKey("deviceToken")) {
+
+        if (dataHash.containsKey("deviceToken")) {
             deviceToken = (String) dataHash.get("deviceToken");
         } else {
             throw new MissingParameterException("deviceToken");
@@ -154,6 +155,7 @@ public class SignUpController {
      */
     @RequestMapping(value = "resources/rydeon/signup", method = RequestMethod.POST)
     @ResponseBody
+    @Deprecated
     public JSONResponse signup(@RequestBody Object data) throws Exception {
         Map<String, Object> dataHash = (HashMap<String, Object>) data;
         Person person = new Person();
@@ -220,12 +222,13 @@ public class SignUpController {
         return new JSONResponse(true, 1, "", "SUCCESS");
 
     }
-    
+
     /**
      * API for creating employee accounts
+     *
      * @param data
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @RequestMapping(value = "admin/rydeon/create/employee/account", method = RequestMethod.POST)
     @ResponseBody
@@ -289,6 +292,9 @@ public class SignUpController {
         //Persist user and use the persisted user to persist person
         users.setPassword(PasswordHash.createHash((String) dataHash.get("password")));
         users.setEnabled(true);
+        users.setAccountNonExpired(Boolean.TRUE);
+        users.setAccountNonLocked(Boolean.TRUE);
+        users.setCredentialNonExpired(Boolean.TRUE);
         users = userService.save(users);
         person.setUser(users);
         person = personService.save(person);
