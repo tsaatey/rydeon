@@ -312,6 +312,7 @@ public class SignUpController {
      */
     @RequestMapping(value = "/resources/rydeon/signup/resendcode", method = RequestMethod.POST)
     @ResponseBody
+    @Deprecated
     public JSONResponse resendCode(@RequestBody Object data) {
         Map<String, Object> dataHash = (HashMap<String, Object>) data;
         String phoneNumber;
@@ -343,6 +344,7 @@ public class SignUpController {
      */
     @RequestMapping(value = "resources/rydeon/signup/verifycode", method = RequestMethod.POST)
     @ResponseBody
+    @Deprecated
     public JSONResponse verifyMember(HttpServletResponse response, @RequestBody Object data) throws MissingParameterException {
         Map<String, String> dataHash = (HashMap<String, String>) data;
         String phoneNumber, code;
