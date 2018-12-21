@@ -299,7 +299,7 @@ public class SignUpController {
         person.setUser(users);
         person = personService.save(person);
 
-        return new JSONResponse(true, 1, "", "SUCCESS");
+        return new JSONResponse(true, 1, person, "SUCCESS");
 
     }
 
