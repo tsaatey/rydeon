@@ -26,7 +26,7 @@ public class Model implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(fetch=FetchType.LAZY)
     private Make make;
     private String modelName;

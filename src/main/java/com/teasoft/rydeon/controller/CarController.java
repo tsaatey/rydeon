@@ -113,7 +113,7 @@ public class CarController {
         car.setOwner(person);
         car.setAddedBy(person);
         
-        if (!image.isEmpty()) {
+        if (image != null && !image.isEmpty()) {
             BufferedImage img = ImageIO.read(image.getInputStream());
             Integer width = img.getWidth();
             Integer height = img.getHeight();
@@ -176,6 +176,96 @@ public class CarController {
         return new JSONResponse(true, 0, car, "SUCCESS");
     }
 
+    @RequestMapping(value = "admin/rydeon/car", method = RequestMethod.POST)
+    @ResponseBody
+    public JSONResponse addCarForUser(HttpServletResponse response, HttpServletRequest request, 
+            @RequestParam("make") Integer make, @RequestParam("model") Integer model,
+            @RequestParam("year") Integer year, @RequestParam("regNumber") String regNumber,
+            @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam Integer userId) throws Exception {
+        
+        Users owner = userService.findOne(userId.longValue());
+        Users addedBy = userService.getCurrentUsers();
+        Person admin = personService.findByUser(addedBy);
+        Person carOwner = personService.findByUser(owner);
+        
+        Make carMake = makeRepo.findOne(make.longValue());
+        Model carModel = modelRepo.findOne(model.longValue());
+
+        if (carMake == null || carModel == null) {
+            return new JSONResponse(false, 0, null, "Invalid model or make");
+        }
+
+        Car car = new Car();
+        car.setMake(carMake);
+        car.setModel(carModel);
+        car.setYear(year);
+        car.setRegNumber(regNumber);
+        car.setOwner(carOwner);
+        car.setAddedBy(admin);
+        
+        if (image != null && !image.isEmpty()) {
+            BufferedImage img = ImageIO.read(image.getInputStream());
+            Integer width = img.getWidth();
+            Integer height = img.getHeight();
+            //Math.abs(width - height) > MAX_IMAGE_DIM_DIFF
+            if (false) {
+                return new JSONResponse(false, 0, null, "Invalid Image dimensions");
+            } else {
+                //Resize img
+                BufferedImage originalImage = ImageIO.read(image.getInputStream());
+                int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+
+//                BufferedImage resizeImagePng = imageService.resizeImage(originalImage, IMG_WIDTH, IMG_HEIGHT, type);
+                BufferedImage resizeImagePng = originalImage;
+
+                String rootPath = request.getSession().getServletContext().getRealPath("/");
+                File dir = new File(rootPath + File.separator + "image");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                File serverFile = new File(dir.getAbsolutePath() + File.separator + image.getOriginalFilename());
+
+                switch (image.getContentType()) {
+                    case "image/png":
+                        ImageIO.write(resizeImagePng, "png", serverFile);
+                        break;
+                    case "image/jpeg":
+                        ImageIO.write(resizeImagePng, "jpg", serverFile);
+                        break;
+                    default:
+                        ImageIO.write(resizeImagePng, "png", serverFile);
+                        break;
+                }
+
+                BufferedImage resizedImage = ImageIO.read(serverFile);
+
+                byte[] imageInByte;
+                try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                    switch (image.getContentType()) {
+                        case "image/png":
+                            ImageIO.write(resizedImage, "png", baos);
+                            break;
+                        case "image/jpeg":
+                            ImageIO.write(resizedImage, "jpg", baos);
+                            break;
+                        default:
+                            ImageIO.write(resizedImage, "png", baos);
+                            break;
+                    }
+
+                    baos.flush();
+                    imageInByte = baos.toByteArray();
+                }
+                car.setImage(imageInByte);
+                serverFile.delete();
+            }
+        }
+        
+        car = carService.save(car);
+        return new JSONResponse(true, 0, car, "SUCCESS");
+    }
+    
     @ExceptionHandler(NullPointerException.class)
     @ResponseBody
     public JSONResponse nullPointerException(NullPointerException e) {

@@ -48,7 +48,7 @@ public class MakeController {
      * @return the make object added
      * @throws Exception 
      */
-    @RequestMapping(value = "api/rydeon/make", method = RequestMethod.POST)
+    @RequestMapping(value = "admin/rydeon/make", method = RequestMethod.POST)
     @ResponseBody
     public JSONResponse saveMake(@RequestParam("make") String make) throws Exception {      
         Make m = new Make();

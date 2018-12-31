@@ -25,6 +25,9 @@ public class PersonService {
     @Autowired
     UsersRepo userRepo;
     
+    public Person findOne(Long id) {
+        return personRepo.findOne(id);
+    }
     public Person save(Person person) {
         return personRepo.save(person);
     }

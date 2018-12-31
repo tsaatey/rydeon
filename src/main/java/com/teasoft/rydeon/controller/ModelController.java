@@ -58,7 +58,7 @@ public class ModelController {
      * @param modelName the name of the model
      * @return the saved model object
      */
-    @RequestMapping(value="api/rydeon/model", method=RequestMethod.POST)
+    @RequestMapping(value="admin/rydeon/model", method=RequestMethod.POST)
     @ResponseBody
     public JSONResponse saveModel(@RequestParam Integer makeId, @RequestParam String modelName) {
         Make make = makeRepo.findOne(makeId.longValue());
