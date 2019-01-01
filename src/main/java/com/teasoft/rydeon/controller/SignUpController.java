@@ -298,6 +298,8 @@ public class SignUpController {
         users = userService.save(users);
         person.setUser(users);
         person = personService.save(person);
+        person.setVerified(Boolean.TRUE);
+        person.setAddedBy(personService.findByUser(userService.getCurrentUsers()));
 
         return new JSONResponse(true, 1, person, "SUCCESS");
 
