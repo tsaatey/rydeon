@@ -167,6 +167,10 @@ public class PersonController {
         if (dataHash.containsKey("gender")) {
             person.setGender((String) dataHash.get("gender"));
         }
+        
+        if (dataHash.containsKey("othernames")) {
+            person.setOthernames((String) dataHash.get("othernames"));
+        }
 
         if (dataHash.containsKey("email")) {
             person.setEmail((String) dataHash.get("email"));

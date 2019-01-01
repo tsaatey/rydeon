@@ -297,9 +297,10 @@ public class SignUpController {
         users.setCredentialNonExpired(Boolean.TRUE);
         users = userService.save(users);
         person.setUser(users);
-        person = personService.save(person);
         person.setVerified(Boolean.TRUE);
         person.setAddedBy(personService.findByUser(userService.getCurrentUsers()));
+        person = personService.save(person);
+        
 
         return new JSONResponse(true, 1, person, "SUCCESS");
 
